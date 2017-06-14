@@ -35,10 +35,10 @@ const char gFragmentShader[] = "#version 300 es         \n"
 //        "  color = texture(tTexture, TexCoord);         \n"
 //        "}\n";
 const GLfloat rectVertex[] = {
-        -0.5f, -0.5f, 0,
-        -0.5f, 0.5f, 0,
-        0.5f, -0.5f, 0,
-        0.5f, 0.5f, 0,
+        -1, -1, 0,
+        -1, 1, 0,
+        1, -1, 0,
+        1, 1, 0,
 };
 
 const GLfloat rectTexture[] = {

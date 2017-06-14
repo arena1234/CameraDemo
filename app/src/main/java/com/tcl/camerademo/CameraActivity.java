@@ -15,7 +15,6 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -25,7 +24,7 @@ import com.tcl.camerademo.opengl.Preview;
 
 import java.util.Arrays;
 
-public class CameraActivity extends AppCompatActivity implements
+public class CameraActivity extends BaseActivity implements
         SurfaceHolder.Callback,
         Preview.TextureListener {
     private static final String TAG = "CAM_CameraActivity";
