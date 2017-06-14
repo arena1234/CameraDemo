@@ -34,6 +34,7 @@ public class CameraActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ImageUtil.init(this);
         setContentView(mSurfaceView = new SurfaceView(this));
         mSurfaceView.getHolder().addCallback(this);
         mPreview = new Preview(mSurfaceView.getHolder().getSurface());

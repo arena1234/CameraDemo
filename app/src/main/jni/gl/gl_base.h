@@ -12,7 +12,7 @@ public:
 
     virtual ~GLBase();
 
-    virtual void onSurfaceCreated(GLuint *textureIds, GLuint size) = 0;
+    virtual GLuint * onSurfaceCreated(GLuint *size) = 0;
 
     virtual void onSurfaceChanged(GLuint w, GLuint h) = 0;
 

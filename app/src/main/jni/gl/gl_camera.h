@@ -11,7 +11,7 @@ public:
 
     virtual ~GLCamera();
 
-    void onSurfaceCreated(GLuint *textureIds, GLuint size);
+    GLuint * onSurfaceCreated(GLuint *size);
 
     void onSurfaceChanged(GLuint w, GLuint h);
 
@@ -19,10 +19,11 @@ public:
 
 private:
     GLuint mProgramShader;
-    GLuint mTextureId;
+    GLuint *pTextureId;
     GLuint *pVAO, *pVBO;
-    GLuint mTextureTarget;
     GLint mSTMatrixHandle;
+    GLint *pTextureHandle;
+    GLuint mTexSize;
 
     void bindBuffer();
 };

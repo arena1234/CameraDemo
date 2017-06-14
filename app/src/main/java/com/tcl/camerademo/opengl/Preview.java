@@ -1,11 +1,15 @@
 package com.tcl.camerademo.opengl;
 
 import android.graphics.SurfaceTexture;
+import android.opengl.GLES30;
+import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Surface;
+
+import com.tcl.camerademo.ImageUtil;
 
 public class Preview implements GLThread.GLListener {
     private static final String TAG = "CAM_Preview";
@@ -80,6 +84,17 @@ public class Preview implements GLThread.GLListener {
     public void onGLCreated() {
         int[] textureid = mNdkJava.onSurfaceCreated();
         if (mListener != null) mListener.onTexturePrepared(textureid);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureid[1]);
+        GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, ImageUtil.bitmap[0], 0);
+
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureid[2]);
+        GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, ImageUtil.bitmap[1], 0);
+
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureid[3]);
+        GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, ImageUtil.bitmap[2], 0);
+
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureid[4]);
+        GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, ImageUtil.bitmap[3], 0);
     }
 
     @Override

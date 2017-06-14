@@ -83,12 +83,10 @@ void release(JNIEnv *env, jobject thiz) {
 }
 
 jintArray onSurfaceCreated(JNIEnv *env, jobject thiz) {
-    GLuint size = 2;
-    GLuint *temp = (GLuint *) malloc(size * sizeof(GLuint));
-    glCamera->onSurfaceCreated(temp, size);
+    GLuint size = 5;
+    GLuint *temp = glCamera->onSurfaceCreated(&size);
     jintArray result = env->NewIntArray(size);
     env->SetIntArrayRegion(result, 0, size, (jint *) temp);
-    free(temp);
     return result;
 }
 

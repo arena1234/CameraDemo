@@ -1,8 +1,6 @@
 #include "gl_camera.h"
 
 GLCamera::GLCamera() : GLBase() {
-//    mTextureTarget = GL_TEXTURE_2D;
-    mTextureTarget = GL_TEXTURE_EXTERNAL_OES;
 }
 
 GLCamera::~GLCamera() {
@@ -10,26 +8,47 @@ GLCamera::~GLCamera() {
     free(pVBO);
 }
 
-void GLCamera::onSurfaceCreated(GLuint *textureIds, GLuint size) {
+GLuint * GLCamera::onSurfaceCreated(GLuint *size) {
     LOGI("[GLCamera:onSurfaceCreated]");
     mProgramShader = createProgram(gVertexShader, gFragmentShader);
     mSTMatrixHandle = glGetUniformLocation(mProgramShader, "st_matrix");
+    char handle[][128] = {
+            "camTexture",
+            "borderTexture",
+            "hefeTexture1",
+            "hefeTexture2",
+            "hefeTexture3",
+    };
+    mTexSize = 5;
+    *size = mTexSize;
+    pTextureId = (GLuint *) malloc(mTexSize * sizeof(GLuint));
+    pTextureHandle = (GLint *) malloc(mTexSize * sizeof(GLint));
+    for (int i = 0; i < mTexSize; i++) {
+        pTextureHandle[i] = glGetUniformLocation(mProgramShader, handle[i]);
+    }
 
     pVAO = (GLuint *) malloc(sizeof(GLuint));
     pVBO = (GLuint *) malloc(2 * sizeof(GLuint));
     glGenVertexArrays(1, pVAO);
     glGenBuffers(2, pVBO);
-    LOGD("[GLCamera:onSurfaceCreated]VAO=%d, VBO=%d, %d", pVAO[0], pVBO[0], pVBO[1]);
 
 
-    glGenTextures(size, textureIds);
-    mTextureId = textureIds[0];
-    glBindTexture(mTextureTarget, mTextureId);
-    glTexParameteri(mTextureTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(mTextureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(mTextureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(mTextureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    LOGD("[GLCamera:onSurfaceCreated]mTextureId=%d", mTextureId);
+    glGenTextures(mTexSize, pTextureId);
+
+    glBindTexture(GL_TEXTURE_EXTERNAL_OES, pTextureId[0]);
+    glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    for (int i = 1; i < mTexSize; i++) {
+        glBindTexture(GL_TEXTURE_2D, pTextureId[i]);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+    return pTextureId;
 }
 
 void GLCamera::onSurfaceChanged(GLuint w, GLuint h) {
@@ -46,8 +65,23 @@ void GLCamera::onDrawFrame(GLfloat *stMatrix) {
     glUseProgram(mProgramShader);
     glBindVertexArray(pVAO[0]);
     checkGLError("draw glBindVertexArray +");
+
     glUniformMatrix4fv(mSTMatrixHandle, 1, GL_FALSE, stMatrix);
-    glBindTexture(mTextureTarget, mTextureId);
+
+    if (pTextureHandle[0] >= 0) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_EXTERNAL_OES, pTextureId[0]);
+        glUniform1i(pTextureHandle[0], 0);
+    }
+
+    for(int i=1; i<mTexSize; i++){
+        if (pTextureHandle[i] >= 0) {
+            glActiveTexture(GL_TEXTURE0+i);
+            glBindTexture(GL_TEXTURE_2D, pTextureId[i]);
+            glUniform1i(pTextureHandle[i], i);
+        }
+    }
+
     glDrawArrays(GL_TRIANGLE_STRIP, 0, sizeof(rectVertex) / sizeof(GLfloat) / 3);
     // 解绑VAO
     glBindVertexArray(0);
