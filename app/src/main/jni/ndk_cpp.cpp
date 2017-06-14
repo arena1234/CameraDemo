@@ -96,8 +96,8 @@ void onSurfaceChanged(JNIEnv *env, jobject thiz, jint w, jint h) {
     glCamera->onSurfaceChanged(w, h);
 }
 
-void onDrawFrame(JNIEnv *env, jobject thiz) {
-    glCamera->onDrawFrame();
+void onDrawFrame(JNIEnv *env, jobject thiz, jfloatArray stMatrix) {
+    glCamera->onDrawFrame(env->GetFloatArrayElements(stMatrix, NULL));
 }
 
 JNINativeMethod gMethods[] = {
@@ -105,7 +105,7 @@ JNINativeMethod gMethods[] = {
         {"nativeRelease",          "()V",   (void *) release},
         {"nativeOnSurfaceCreated", "()[I",  (void *) onSurfaceCreated},
         {"nativeOnSurfaceChanged", "(II)V", (void *) onSurfaceChanged},
-        {"nativeOnDrawFrame",      "()V",   (void *) onDrawFrame},
+        {"nativeOnDrawFrame",      "([F)V", (void *) onDrawFrame},
 };
 
 int JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {

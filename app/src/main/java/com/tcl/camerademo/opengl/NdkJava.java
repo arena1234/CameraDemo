@@ -17,8 +17,8 @@ public class NdkJava {
         nativeOnSurfaceChanged(w, h);
     }
 
-    public void onDrawFrame() {
-        nativeOnDrawFrame();
+    public void onDrawFrame(float[] stMatrix) {
+        nativeOnDrawFrame(stMatrix);
     }
 
     private void init() {
@@ -37,7 +37,7 @@ public class NdkJava {
 
     private native void nativeOnSurfaceChanged(int w, int h);
 
-    private native void nativeOnDrawFrame();
+    private native void nativeOnDrawFrame(float[] stMatrix);
 
     private native void nativeInit();
 

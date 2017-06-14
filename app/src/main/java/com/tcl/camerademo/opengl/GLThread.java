@@ -20,7 +20,7 @@ public class GLThread extends Thread {
         mSurface = surface;
     }
 
-    public void setGLListener(GLListener listener){
+    public void setGLListener(GLListener listener) {
         mListener = listener;
     }
 
@@ -54,7 +54,7 @@ public class GLThread extends Thread {
     }
 
     private void glThreadRunnable() {
-        if(mSurface == null) return;
+        if (mSurface == null) return;
         mEglHelper = new EGLHelper(mSurface);
 
         boolean createEglContext = true;
@@ -73,24 +73,26 @@ public class GLThread extends Thread {
                 }
 
                 if (createEglContext) {
-                    if(mListener != null) mListener.onGLCreated();
+                    if (mListener != null) mListener.onGLCreated();
                     createEglContext = false;
                 }
 
                 if (sizeChanged) {
-                    if(mListener != null) mListener.onGLChanged(mWidth, mHeight);
+                    if (mListener != null) mListener.onGLChanged(mWidth, mHeight);
                     sizeChanged = false;
                 }
-                if(mListener != null) mListener.onGLDrawFrame();
+                if (mListener != null) mListener.onGLDrawFrame();
 
                 mEglHelper.swap();
             }
         }
     }
 
-    public interface GLListener{
+    public interface GLListener {
         void onGLCreated();
+
         void onGLChanged(int w, int h);
+
         void onGLDrawFrame();
     }
 }

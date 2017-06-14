@@ -16,7 +16,7 @@ public:
 
     virtual void onSurfaceChanged(GLuint w, GLuint h) = 0;
 
-    virtual void onDrawFrame() = 0;
+    virtual void onDrawFrame(GLfloat *stMatrix) = 0;
 
 protected:
     GLuint createProgram(const char *pVertexSource, const char *pFragmentSource);

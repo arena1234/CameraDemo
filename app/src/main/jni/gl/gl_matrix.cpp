@@ -233,11 +233,11 @@ GLfloat *Matrix::getCameraMatrix() {
     return mCameraMatrix;
 }
 
-GLfloat* Matrix::getProjectionMatrix() {
+GLfloat *Matrix::getProjectionMatrix() {
     return mProjectionMatrix;
 }
 
-GLfloat* Matrix::getTransformMatrix() {
+GLfloat *Matrix::getTransformMatrix() {
     return mTransformMatrix;
 }
 
