@@ -12,19 +12,12 @@ GLuint * GLCamera::onSurfaceCreated(GLuint *size) {
     LOGI("[GLCamera:onSurfaceCreated]");
     mProgramShader = createProgram(gVertexShader, gFragmentShader);
     mSTMatrixHandle = glGetUniformLocation(mProgramShader, "st_matrix");
-    char handle[][128] = {
-            "camTexture",
-            "borderTexture",
-            "hefeTexture1",
-            "hefeTexture2",
-            "hefeTexture3",
-    };
-    mTexSize = 5;
+    mTexSize = sizeof(fragmentHandle) / sizeof(fragmentHandle[0]);
     *size = mTexSize;
     pTextureId = (GLuint *) malloc(mTexSize * sizeof(GLuint));
     pTextureHandle = (GLint *) malloc(mTexSize * sizeof(GLint));
     for (int i = 0; i < mTexSize; i++) {
-        pTextureHandle[i] = glGetUniformLocation(mProgramShader, handle[i]);
+        pTextureHandle[i] = glGetUniformLocation(mProgramShader, fragmentHandle[i]);
     }
 
     pVAO = (GLuint *) malloc(sizeof(GLuint));
