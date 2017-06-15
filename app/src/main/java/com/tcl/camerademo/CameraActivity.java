@@ -39,6 +39,7 @@ public class CameraActivity extends BaseActivity implements
         mSurfaceView.getHolder().addCallback(this);
         mPreview = new Preview(mSurfaceView.getHolder().getSurface());
         mPreview.setTextureListener(this);
+        mPreview.setAutoRefresh(false);
     }
 
     @Override
@@ -72,8 +73,7 @@ public class CameraActivity extends BaseActivity implements
                 mCameraSurfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
                     @Override
                     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                        //mVideoSurfaceView.requestRender();
-                        //Log.d(TAG, "onFrameAvailable");
+                        mPreview.refresh();
                     }
                 });
                 mPreview.setSurfaceTexture(mCameraSurfaceTexture);

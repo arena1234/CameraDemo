@@ -18,12 +18,15 @@ public class Preview implements GLThread.GLListener {
     private boolean mDetached;
     private Handler mHandler;
     private SurfaceTexture mCameraSurfaceTexture;
+    private int fps = 24;
+    private boolean bAutoRefresh;
 
     public Preview(Surface surface) {
         mNdkJava = new NdkJava();
         mGLThread = new GLThread(surface);
         mGLThread.setGLListener(this);
         mGLThread.start();
+        bAutoRefresh = true;
 
         mHandler = new Handler() {
             @Override
@@ -32,15 +35,19 @@ public class Preview implements GLThread.GLListener {
                 refresh();
             }
         };
-        refresh();
     }
 
-    private void refresh() {
-        mHandler.sendEmptyMessageDelayed(0, 30);
+    public void refresh() {
+        if (mGLThread != null) mGLThread.refresh();
+        if(bAutoRefresh) mHandler.sendEmptyMessageDelayed(0, (int) (1000.0 / fps));
     }
 
     private void disRefresh() {
         mHandler.removeMessages(0);
+    }
+
+    public void setAutoRefresh(boolean auto){
+        bAutoRefresh = auto;
     }
 
     public void onDestroy() {
@@ -119,7 +126,7 @@ public class Preview implements GLThread.GLListener {
                 long currTime = System.currentTimeMillis();
                 if (currTime - lastTime >= 5000) {
                     lastTime = currTime;
-                    Log.d(TAG, "fps=" + (fpsCount * 0.2f));
+                    Log.d(TAG, "fps=" + fpsCount * 0.2f);
                     fpsCount = 0;
                 }
             }

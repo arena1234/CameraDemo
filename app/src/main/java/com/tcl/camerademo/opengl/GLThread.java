@@ -12,12 +12,14 @@ public class GLThread extends Thread {
     private int mHeight;
     private GLListener mListener;
     private Surface mSurface;
+    private Object mWaitObject;
 
     public GLThread(Surface surface) {
         super();
         mWidth = 0;
         mHeight = 0;
         mSurface = surface;
+        mWaitObject = new Object();
     }
 
     public void setGLListener(GLListener listener) {
@@ -42,6 +44,12 @@ public class GLThread extends Thread {
         mHeight = h;
     }
 
+    public void refresh() {
+        synchronized (mWaitObject) {
+            mWaitObject.notifyAll();
+        }
+    }
+
     @Override
     public void run() {
         setName("GLThread " + getId());
@@ -63,27 +71,36 @@ public class GLThread extends Thread {
         bExitGLThread = false;
 
         while (true) {
-            if (bExitGLThread) break;
-            if (mHasSurface) {
-                if (createEglSurface) {
-                    if (!mEglHelper.createSurface()) {
-                        continue;
+            synchronized (mWaitObject) {
+                if (bExitGLThread) break;
+                if (mHasSurface) {
+                    if (createEglSurface) {
+                        if (!mEglHelper.createSurface()) {
+                            continue;
+                        }
+                        createEglSurface = false;
                     }
-                    createEglSurface = false;
-                }
 
-                if (createEglContext) {
-                    if (mListener != null) mListener.onGLCreated();
-                    createEglContext = false;
-                }
+                    if (createEglContext) {
+                        if (mListener != null) mListener.onGLCreated();
+                        createEglContext = false;
+                    }
 
-                if (sizeChanged) {
-                    if (mListener != null) mListener.onGLChanged(mWidth, mHeight);
-                    sizeChanged = false;
-                }
-                if (mListener != null) mListener.onGLDrawFrame();
+                    if (sizeChanged) {
+                        if (mListener != null) mListener.onGLChanged(mWidth, mHeight);
+                        sizeChanged = false;
+                    }
 
-                mEglHelper.swap();
+                    if (mListener != null) mListener.onGLDrawFrame();
+
+                    mEglHelper.swap();
+
+                    try {
+                        mWaitObject.wait();
+                    } catch (InterruptedException mE) {
+                        mE.printStackTrace();
+                    }
+                }
             }
         }
     }
