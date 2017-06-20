@@ -9,11 +9,9 @@ import android.graphics.BitmapFactory;
  */
 
 public class ImageUtil {
-    public static Bitmap[] bitmap = new Bitmap[4];
+    public static Bitmap[] bitmap = new Bitmap[2];
     public static void init(Context context){
-        bitmap[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.border_1);
-        bitmap[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.hefe_a);
-        bitmap[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.hefe_b);
-        bitmap[3] = BitmapFactory.decodeResource(context.getResources(), R.drawable.hefe_c);
+        bitmap[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.edge_1);
+        bitmap[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.filter_1);
     }
 }

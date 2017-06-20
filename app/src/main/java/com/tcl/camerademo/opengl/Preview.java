@@ -96,12 +96,6 @@ public class Preview implements GLThread.GLListener {
 
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureid[2]);
         GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, ImageUtil.bitmap[1], 0);
-
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureid[3]);
-        GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, ImageUtil.bitmap[2], 0);
-
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureid[4]);
-        GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, ImageUtil.bitmap[3], 0);
     }
 
     @Override

@@ -18,22 +18,34 @@ const char gVertexShader[] = "#version 300 es                       \n"
         "}\n";
 
 const char gFragmentShader[] = "#version 300 es                     \n"
-        "#extension GL_OES_EGL_image_external : require             \n"
+        "#extension GL_OES_EGL_image_external : require       \n"
         "precision mediump float;                                   \n"
         "in vec2 TexCoord;                                          \n"
         "uniform samplerExternalOES camTexture;                     \n"
         "uniform sampler2D edgeTexture;                             \n"
-        "uniform sampler2D hefeTexture1;                            \n"
+        "uniform sampler2D filterTexture;                           \n"
         "out vec4 color;                                            \n"
         "void main() {                                              \n"
-        "  vec3 tCamera = texture(camTexture, TexCoord).rgb;        \n"
-        "  vec3 tEdge = texture(edgeTexture, TexCoord).rgb;         \n"
+        "  vec4 tCamera = texture(camTexture, TexCoord);        \n"
+        "  vec4 tEdge = texture(edgeTexture, TexCoord);         \n"
         "  tCamera = tCamera * tEdge;                               \n"
-        "  tCamera = vec3(                                          \n"
-        "    texture(hefeTexture1, vec2(tCamera.r, .16666)).r,      \n"
-        "    texture(hefeTexture1, vec2(tCamera.g, .5)).g,          \n"
-        "    texture(hefeTexture1, vec2(tCamera.b, .83333)).b);     \n"
-        "  color = vec4(tCamera, 1.0);                              \n"
+        "  float blueColor = tCamera.b * 63.0;\n"
+        "  vec2 quad1;\n"
+        "  quad1.y = floor(blueColor/8.0);\n"
+        "  quad1.x = floor(blueColor) - (quad1.y * 8.0);\n"
+        "  vec2 quad2;\n"
+        "  quad2.y = floor(ceil(blueColor)/7.999);\n"
+        "  quad2.x = ceil(blueColor) - (quad2.y * 8.0);\n"
+        "  vec2 texPos1;\n"
+        "  texPos1.x = (quad1.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * tCamera.r);\n"
+        "  texPos1.y = (quad1.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * tCamera.g);\n"
+        "  vec2 texPos2;\n"
+        "  texPos2.x = (quad2.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * tCamera.r);\n"
+        "  texPos2.y = (quad2.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * tCamera.g);\n"
+        "  vec4 newColor1 = texture(filterTexture, texPos1);\n"
+        "  vec4 newColor2 = texture(filterTexture, texPos2);\n"
+        "  vec4 newColor = mix(newColor1, newColor2, fract(blueColor));\n"
+        "  color = vec4(newColor.rgb, tCamera.w);\n"
         "}\n";
 //const char gFragmentShader[] = "#version 300 es         \n"
 //        "precision mediump float;                       \n"
@@ -46,9 +58,7 @@ const char gFragmentShader[] = "#version 300 es                     \n"
 const char fragmentHandle[][128] = {
         "camTexture",
         "edgeTexture",
-        "hefeTexture1",
-        "hefeTexture2",
-        "hefeTexture3",
+        "filterTexture"
 };
 const GLfloat rectVertex[] = {
         -1, -1, 0,
